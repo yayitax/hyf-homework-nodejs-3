@@ -6,9 +6,7 @@ app.get('/', function(req, res) {
 })
 
 app.get('/users', function(req, res) {
-    res.send({
-        users: []
-    })
+    res.send([])
 })
 
 app.listen(3000, function() {
