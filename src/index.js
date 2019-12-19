@@ -2,19 +2,23 @@ const express = require('express');
 const app = express();
 
 let users = []
-let count = 0
-let jsonStr = ""
+
+app.all("/*", function(req, res, next) {
+    res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
+    return next();
+})
 
 app.get('/', function(req, res) {
     res.send('Hello World!')
 })
 
 app.get('/users', function(req, res) {
+
     res.send(users)
 })
 
 app.get('/user/:id', function(req, res) {
-    if (count) {
+    if (users.length) {
         res.json(users[req.params.id])
     } else {
         res.send(users)
@@ -22,10 +26,18 @@ app.get('/user/:id', function(req, res) {
 })
 
 app.post('/user', function(req, res) {
-    const id = count;
-    users.push({ "id": id });
-    res.json(users[count])
-    count++;
+    users.push({ "id": users.length });
+    res.json(users[users.length - 1]);
+})
+
+app.delete('/user:id', function(req, res) {
+    if (users.length) {
+        let user = users.splice(req.params.id, 1)
+
+        res.status(202).send(user)
+    } else {
+        res.sendStatus(204);
+    }
 })
 
 app.listen(3000, function() {
