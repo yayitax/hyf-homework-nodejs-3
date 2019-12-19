@@ -1,49 +1,47 @@
 const express = require('express');
-const app = express();
+const _ = require('underscore');
 
-let users = []
+const app  = new express();
 
-app.all("/*", function(req, res, next) {
-    res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
-    return next();
+let users = [];
+
+
+app.get('/', (req, res) => {
+    res.send('Hello World!');
+});
+
+app.get('/users', (req, res) => {
+        
+    res.json(users)
+
 })
 
-app.get('/', function(req, res) {
-    res.send('Hello World!')
+app.post('/user', (req, res) => {
+    users.push({id:0})
+    res.json(users);
 })
 
-app.get('/users', function(req, res) {
+app.get('/user/:id', (req, res) => {
+    const user = users.find(user => user.id == req.params.id);
+    res.json(user);
+});
 
-    res.send(users)
-})
+app.delete('/user/:id', (req, res) => {
 
-app.get('/user/:id', function(req, res) {
-    if (users.length) {
-        res.json(users[req.params.id])
-    } else {
-        res.send(users)
-    }
-})
-
-app.post('/user', function(req, res) {
-    users.push({ "id": users.length });
-    res.json(users[users.length - 1]);
-})
-
-app.delete('/user:id', function(req, res) {
-    if (users.length > 0) {
-        let user = users.splice(req.params.id, 1)
-
+   
+    if(users.length > 0){
+        users = [];
         res.status(202).json({
             ok: true
         })
     } else {
-        res.sendStatus(204).json({
+        res.status(204).json({
             ok: true
         });
     }
+
 })
 
-app.listen(3000, function() {
-    console.log("server is running")
+app.listen(3000, () => {
+    console.log('Listen on port 3000');
 })
