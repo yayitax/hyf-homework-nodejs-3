@@ -31,12 +31,16 @@ app.post('/user', function(req, res) {
 })
 
 app.delete('/user:id', function(req, res) {
-    if (users.length) {
+    if (users.length > 0) {
         let user = users.splice(req.params.id, 1)
 
-        res.status(202).send(user)
+        res.status(202).json({
+            ok: true
+        })
     } else {
-        res.sendStatus(204);
+        res.sendStatus(204).json({
+            ok: true
+        });
     }
 })
 
